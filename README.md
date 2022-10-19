@@ -14,7 +14,6 @@ Correlation, in the finance and investment industries, is a statistic that measu
 
 or copy files to your jesse project: `config.py, bulk-import.py, correlation.py, sample.html` and run as described in 4th point.
 
+#### Example of generated table
 
-
-
-
+![Screen Shot 2022-10-19 at 16 18 26-fullpage](https://user-images.githubusercontent.com/25667028/196711305-7ad0fd62-1386-4291-b8f3-d67a033b20c0.png)
