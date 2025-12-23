@@ -34,3 +34,4 @@ live-config.py
 routes.py
 .env
 /storage/correlations
+pyrightconfig.json
