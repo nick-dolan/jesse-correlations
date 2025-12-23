@@ -1,15 +1,16 @@
+import datetime
+import itertools
+import json
+import sys
 import threading
 import time
-import sys
+from pathlib import Path
+
+import jesse.helpers as jh
+import numpy as np
+from jesse import research
 
 from config import config
-
-import numpy as np
-import itertools
-from jesse import research
-import json
-import datetime
-from pathlib import Path
 
 pairs = config['pairs']
 exchange = config['exchange']
@@ -43,14 +44,15 @@ grid = np.ones(shape=(count, count))
 
 for (i, first), (j, second) in itertools.combinations(enumerate(pairs), 2):
     try:
-        first_candles = research.get_candles(exchange, first, timeframe, start_date, finish_date)
-        second_candles = research.get_candles(exchange, second, timeframe, start_date, finish_date)
+        first_candles = research.get_candles(exchange, first, timeframe, jh.date_to_timestamp(start_date), jh.date_to_timestamp(finish_date))
+        second_candles = research.get_candles(exchange, second, timeframe, jh.date_to_timestamp(start_date), jh.date_to_timestamp(finish_date))
     except Exception as e:
         print("An exception occurred")
         print(e)
         break
 
-    res = np.corrcoef(first_candles[:, -1], second_candles[:, -1])
+
+    res = np.corrcoef(first_candles[1][:, -1], second_candles[1][:, -1])
 
     grid[i, j], grid[j, i] = res[0, 1], res[1, 0]
 
