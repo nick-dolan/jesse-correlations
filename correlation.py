@@ -1,16 +1,12 @@
-import datetime
 import itertools
 import json
-import sys
-import threading
-import time
-from pathlib import Path
 
 import jesse.helpers as jh
 import numpy as np
 from jesse import research
 
 from config import config
+from utils.utils import generate_file
 
 pairs = config['pairs']
 exchange = config['exchange']
@@ -18,22 +14,8 @@ start_date = config['corr_start_date']
 finish_date = config['corr_finish_date']
 timeframe = config['timeframe']
 
-done = False
 
-def animate():
-    for c in itertools.cycle(['', '.', '..', '...']):
-        if done:
-            break
-
-        sys.stdout.write('\rCalculating correlations' + c)
-        sys.stdout.flush()
-        time.sleep(0.5)
-
-    sys.stdout.write('\rDone!')
-
-
-t = threading.Thread(target=animate)
-t.start()
+print("Calculating correlations...")
 
 #
 # Calculate correlation
@@ -56,6 +38,9 @@ for (i, first), (j, second) in itertools.combinations(enumerate(pairs), 2):
 
     grid[i, j], grid[j, i] = res[0, 1], res[1, 0]
 
+#
+# Generate html output
+#
 metadata = {
     "pairs": list(map(lambda item: item.replace('-', '/'), pairs)),
     "exchange": exchange,
@@ -64,25 +49,9 @@ metadata = {
     "finish_date": finish_date.replace('-', '.'),
 }
 
-#
-# Generate html output
-#
 result = {'grid': grid.tolist(), 'metadata': metadata}
 result = json.dumps(result)
 
-with open('sample.html', 'r') as file:
-    file_data = file.read()
-title = "Correlation Table ◾ {}".format(datetime.datetime.today().strftime("%d %b, %Y %H:%M"))
+generate_file(result)
 
-file_data = file_data \
-    .replace('#DATE', title) \
-    .replace('#JSON', result)
-
-Path("./storage/correlations").mkdir(parents=True, mode=0o777, exist_ok=True)
-
-file_name = "storage/correlations/correlation__{}.html".format(datetime.datetime.today().strftime("%Y-%m-%d__%H-%M"))
-
-with open(file_name, 'w') as file:
-    file.write(file_data)
-
-done = True
+print("Done!")
