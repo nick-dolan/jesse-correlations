@@ -12,7 +12,6 @@ config = {
         'ADA-USDT',
         'SOL-USDT',
         'DOGE-USDT',
-        'MATIC-USDT',
         'DOT-USDT',
         'TRX-USDT'
     ]
